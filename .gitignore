@@ -1,0 +1,28 @@
+# dlt
+**/secrets.toml 
+**/.env
+
+# dbt
+target/
+dbt_packages/
+logs/
+
+# Python
+*.pyc
+__pycache__/
+venv/
+.venv
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Custom files
+ToDo.md
+*.duckdb
+.dbt/
+scratch/
+.env
