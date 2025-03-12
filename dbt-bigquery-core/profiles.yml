@@ -1,23 +1,21 @@
 dbt-bigquery-core-profile:
-  target: dev
+  target: prod  # Default to prod for BigQuery
   outputs:
     dev:
-      type: duckdb
-      path: /tmp/dbt.duckdb
-      schema: dev
-      threads: 1
-      extensions: 
+      extensions:
         - httpfs
         - parquet
-        - aws
+      path: ./dbt.duckdb
+      schema: dev
+      threads: 1
+      type: duckdb
     prod:
-      dataset: dev_ekoepplin
+      type: bigquery
+      method: service-account
+      project: dbt-bigquery-core
+      dataset: ingest_newsapi_v1  # Ensure the dataset name is correct
+      threads: 1
       job_execution_timeout_seconds: 300
       job_retries: 1
-      keyfile: /Users/ekoepplin/bigquery-dbt-core-credentials.json
-      location: EU
-      method: service-account
+      keyfile: /Users/ekoepplin/dbt-bigquery-core-86e81e5718d0.json
       priority: interactive
-      project: dbt-bigquery-core
-      threads: 1
-      type: bigquery
