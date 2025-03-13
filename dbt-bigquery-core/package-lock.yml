@@ -1,8 +1,8 @@
 packages:
-  - package: calogica/dbt_expectations
-    version: 0.8.5
   - package: dbt-labs/dbt_utils
     version: 1.3.0
+  - package: metaplane/dbt_expectations
+    version: 0.8.5
   - package: tnightengale/dbt_meta_testing
     version: 0.3.6
   - package: dbt-labs/codegen
@@ -13,4 +13,4 @@ packages:
     revision: 5be2a9e75a9bf58c1113abb2187283fece805f0d
   - package: calogica/dbt_date
     version: 0.7.2
-sha1_hash: 45afbfcaf08e2bcd05e2fa989dd8c5bd3b11f2f6
+sha1_hash: 2de400231674ed5a23015dd309f49c89b96c27b0

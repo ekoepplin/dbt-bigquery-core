@@ -19,3 +19,8 @@ clean-targets:
 models:
   dbt_bigquery_core:
     materialized: table
+    intermediate:
+      +materialized: view
+    mart:
+      +materialized: table
+      +tags: ['mart', 'reporting']
