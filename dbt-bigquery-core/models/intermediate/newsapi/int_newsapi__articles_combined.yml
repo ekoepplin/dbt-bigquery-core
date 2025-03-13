@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: int_newsapi__articles_combined
+    description: "Combined articles from US English and German sources"
+    meta:
+      owner: "data_team_name"
+      business_domain: "content"
+      priority: "high"
+      sla: "daily"
+      business_terms:
+        article: "A news article from either US or German sources"
+        source_name: "The official name of the news publication"
+      upstream_dependencies:
+        - "NewsAPI"
+      data_category: "news_content"
+      update_schedule: "hourly"
+    tests:
+      - dbt_utils.equal_rowcount:
+          compare_model: ref('stg_newsapi__articles_us_en')
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - url
+            - language_code
+    columns:
+      - name: source_name
+        description: "Name of the news source"
+        tests:
+          - not_null
+      - name: author
+        description: "Author of the article"
+      - name: title
+        description: "Title of the article"
+        tests:
+          - not_null
+      - name: description
+        description: "Description or summary of the article"
+      - name: url
+        description: "URL to the article"
+        tests:
+          - not_null
+      - name: image_url
+        description: "URL to the article's image"
+      - name: published_at
+        description: "Publication date and time"
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_of_type:
+              column_type: timestamp
+      - name: content
+        description: "Article content"
+      - name: language_code
+        description: "Language code (en or de)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['en', 'de']
+      - name: _dlt_load_id
+        description: "Load ID from data loading tool"
+        tests:
+          - not_null
+      - name: _dlt_id
+        description: "Unique ID from data loading tool"
+        tests:
+          - not_null
+          - unique
+      - name: source_table
+        description: "Source table identifier (us_en or de_de)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['us_en', 'de_de'] 

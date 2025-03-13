@@ -1,18 +1,36 @@
+version: 2
+
 sources:
   - name: newsapi
     database: "{{ target.database if target.database is defined else 'main' }}"
     schema: ingest_newsapi_v1
-    description: "Source data from the NewsAPI to GCS bucket"
+    description: "Source data from the NewsAPI S3 bucket"
+    freshness:
+      warn_after: {count: 1, period: hour}
+      error_after: {count: 24, period: hour}
+    loaded_at_field: "_dlt_loads.inserted_at"
+    meta:
+      owner: "data_engineering_team"
+      source_system: "NewsAPI"
+      data_contract:
+        version: "1.0"
+        owner: "external_vendor"
+      sla_requirements:
+        freshness: "1 hour"
+        completeness: "98%"
+      contact_info:
+        slack_channel: "#data-newsapi-support"
+        team_email: "data-team@company.com"
     
     tables:
-      - name: raw_newsapi__articles_us_en
-        identifier: articles_us_en
-        meta:
-          external_location: "{{ env_var('BIGQUERY_TABLE_US_EN') if target.type == 'duckdb' else none }}"
-        description: "US English articles from NewsAPI"
-
       - name: raw_newsapi__articles_de_de
         identifier: articles_de_de
         meta:
           external_location: "{{ env_var('BIGQUERY_TABLE_DE_DE') if target.type == 'duckdb' else none }}"
         description: "German articles from NewsAPI"
+
+      - name: raw_newsapi__articles_us_en
+        identifier: articles_us_en
+        meta:
+          external_location: "{{ env_var('BIGQUERY_TABLE_US_EN') if target.type == 'duckdb' else none }}"
+        description: "US English articles from NewsAPI"

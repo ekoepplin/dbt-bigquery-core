@@ -9,5 +9,5 @@ SELECT
     content,
     'en' AS language_code,
     _dlt_load_id,
-    _dlt_id 
+    _dlt_id
 FROM {{ ref('src_newsapi__articles_us_en') }}
