@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: int_newsapi__articles_combined
+  - name: int_newsapi__articles
     description: "Combined articles from US English and German sources"
     meta:
       owner: "data_team_name"

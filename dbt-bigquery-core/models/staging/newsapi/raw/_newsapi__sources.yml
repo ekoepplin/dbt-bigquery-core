@@ -4,7 +4,7 @@ sources:
   - name: newsapi
     database: "{{ target.database if target.database is defined else 'main' }}"
     schema: ingest_newsapi_v1
-    description: "Source data from the NewsAPI S3 bucket"
+    description: "Source data from the NewsAPI BigQuery storage"
     freshness:
       warn_after: {count: 1, period: hour}
       error_after: {count: 24, period: hour}
