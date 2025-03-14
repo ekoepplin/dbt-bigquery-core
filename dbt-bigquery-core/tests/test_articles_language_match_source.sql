@@ -9,7 +9,7 @@ WITH validation AS (
             WHEN source_table = 'de_de' AND language_code = 'de' THEN TRUE
             ELSE FALSE
         END AS is_valid
-    FROM {{ ref('int_newsapi__articles_combined') }}
+    FROM {{ ref('int_newsapi__articles') }}
 )
 
 SELECT *

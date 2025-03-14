@@ -17,7 +17,7 @@ models:
       # Testing total article count
       - dbt_expectations.expect_table_aggregation_to_equal_other_table:
           expression: SUM(article_count)
-          compare_model: ref('int_newsapi__articles_combined')
+          compare_model: ref('int_newsapi__articles')
           compare_expression: COUNT(*)
           compare_row_condition: published_at IS NOT NULL
           tolerance_percent: 0.0001
@@ -27,7 +27,7 @@ models:
       - dbt_expectations.expect_table_aggregation_to_equal_other_table:
           expression: SUM(article_count)
           group_by: [language_code]
-          compare_model: ref('int_newsapi__articles_combined')
+          compare_model: ref('int_newsapi__articles')
           compare_expression: COUNT(*)
           compare_group_by: [language_code]
           compare_row_condition: published_at IS NOT NULL
@@ -38,7 +38,7 @@ models:
       - dbt_expectations.expect_table_aggregation_to_equal_other_table:
           expression: SUM(article_count)
           group_by: [article_date]
-          compare_model: ref('int_newsapi__articles_combined')
+          compare_model: ref('int_newsapi__articles')
           compare_expression: COUNT(*)
           compare_group_by: [EXTRACT(DATE FROM published_at)]
           compare_row_condition: published_at IS NOT NULL

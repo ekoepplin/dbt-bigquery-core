@@ -7,7 +7,7 @@ WITH daily_articles AS (
         language_code,
         COUNT(*) AS article_count,
         COUNT(DISTINCT source_name) AS source_count
-    FROM {{ ref('int_newsapi__articles_combined') }}
+    FROM {{ ref('int_newsapi__articles') }}
     WHERE published_at IS NOT NULL
     GROUP BY EXTRACT(DATE FROM published_at), language_code
 ),
