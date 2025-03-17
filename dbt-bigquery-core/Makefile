@@ -19,6 +19,6 @@ dbt-test:
 	dbt test
 
 # Run Soda ingest
-soda-ingest: dbt-run dbt-test
+soda-ingest: 
 	@echo "Running Soda ingest..."
 	soda ingest dbt -d $(DBT_PROJECT) -c $(SODA_CONFIG) --dbt-artifacts $(DBT_TARGET)

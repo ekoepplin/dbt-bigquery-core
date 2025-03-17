@@ -1,5 +1,5 @@
 # Stage 1: Base
-FROM python:3.12 as base
+FROM python:3.9.21 as base
 
 # Install Poetry
 RUN pip install poetry --no-cache-dir
@@ -9,8 +9,7 @@ FROM base as development
 # Set working directory
 WORKDIR /app
 # Copy Poetry configuration files
-#COPY pyproject.toml poetry.lock ./
-COPY pyproject.toml ./
+COPY pyproject.toml poetry.lock ./
 # Install development dependencies
 RUN poetry config virtualenvs.create false && poetry install
 
@@ -19,8 +18,7 @@ FROM base as production
 # Set working directory
 WORKDIR /app
 # Copy Poetry configuration files
-# COPY Makefile pyproject.toml poetry.lock ./
-COPY Makefile pyproject.toml ./
+COPY Makefile pyproject.toml poetry.lock ./
 # Copy the codebase
 COPY ./dbt-bigquery-core ./dbt-bigquery-core
 # Install only runtime dependencies
