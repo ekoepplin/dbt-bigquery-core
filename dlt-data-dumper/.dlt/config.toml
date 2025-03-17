@@ -7,7 +7,3 @@ loader_file_format="parquet"
 
 [destination]
 name = "filesystem"
-
-[sources.filesystem] 
-bucket_url='gcs://my_bucket'
-file_glob="*"

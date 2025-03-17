@@ -1,7 +1,7 @@
 data_source dbt_bigquery_core:
   type: bigquery
   connection:
-    account_info_json_path:  
+    account_info_json_path: ${GOOGLE_SERVICE_ACCOUNT_KEY_PATH}
     auth_scopes:
       - https://www.googleapis.com/auth/bigquery
       - https://www.googleapis.com/auth/cloud-platform
@@ -10,5 +10,5 @@ data_source dbt_bigquery_core:
     dataset: dbt_bigquery_core
 soda_cloud:
   host: cloud.soda.io
-  api_key_id: 
-  api_key_secret: 
+  api_key_id: ${SODA_CLOUD_API_KEY_ID}
+  api_key_secret: ${SODA_CLOUD_API_KEY_SECRET}

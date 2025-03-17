@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: mart_newsapi__daily_articles
+    config:
+      materialized: table
+      contract:
+        enforced: true
+    columns:
+      - name: article_date
+        type: date
+        tests:
+          - not_null
+      - name: article_count
+        type: integer
+        tests:
+          - not_null
