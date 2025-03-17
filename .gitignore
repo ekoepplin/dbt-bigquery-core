@@ -26,3 +26,7 @@ ToDo.md
 .dbt/
 scratch/
 .env
+
+credentials/
+*.json
+!package.json

@@ -12,21 +12,107 @@
 	},
 
 	"mounts": [
-		"source=${localEnv:HOME}/.config/gcloud,target=/root/.config/gcloud,type=bind"
+		"source=${localWorkspaceFolder}/credentials/service-account.json,target=/workspace/credentials/service-account.json,type=bind",
+		"source=${localWorkspaceFolder}/credentials/soda-credentials.env,target=/workspace/credentials/soda-credentials.env,type=bind"
+
+	],
+	"remoteEnv": {
+    	"GOOGLE_SERVICE_ACCOUNT_KEY_PATH": "/workspace/credentials/service-account.json",
+		"SODA_CREDENTIALS_FILE": "/workspace/credentials/soda-credentials.env"
+	},
+	"runArgs": [
+		"--env-file",
+		"./credentials/soda-credentials.env"
 	],
 
-	// Configure tool-specific properties.
-	// "customizations": {},
-
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	"remoteUser": "root",
 	"customizations": {
 		"vscode": {
 			"extensions": [
 				"GitHub.copilot",
 				"GitHub.copilot-chat",
-				"ms-python.python"
-			]
+				"ms-python.python",
+				"bastienboutonnet.vscode-dbt",
+				"dorzey.vscode-sqlfluff",
+				"editorconfig.editorconfig",
+				"amodio.find-related",
+				"ms-azuretools.vscode-docker",
+				"visualstudioexptteam.vscodeintellicode",
+				"samuelcolvin.jinjahtml",
+				"redhat.vscode-yaml",
+				"innoverio.vscode-dbt-power-user"
+			],
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "/bin/sh",
+				"files.associations": {
+					"*.sql": "jinja-sql",
+					"*.sqlfluff": "ini",
+					"*.yml": "yaml",
+					"**/target/**": ""
+				},
+				"sql.linter.executablePath": "/usr/local/bin/sqlfluff",
+				"sql.format.enable": true,
+				"sql.linter.run": "onType",
+				"files.exclude": {
+					"**/.git": true,
+					"**/.svn": true,
+					"**/.hg": true,
+					"**/CVS": true,
+					"**/.DS_Store": true,
+					"**/__pycache__": true
+				},
+				"findrelated.workspaceRulesets": [
+					{
+						"name": "sql",
+						"rules": [
+							{
+								"pattern": "^(.*/)?models/(.*/)?(.+\\.sql)$",
+								"locators": ["**/compiled/**/$3"]
+							},
+							{
+								"pattern": "^(.*/)?compiled/(.*/)?(.+\\.sql)$",
+								"locators": ["**/run/**/$3"]
+							},
+							{
+								"pattern": "^(.*/)?run/(.*/)?(.+\\.sql)$",
+								"locators": ["**/models/**/$3"]
+							}
+						]
+					}
+				],
+				"findrelated.applyRulesets": ["sql"],
+				"findrelated.applyWorkspaceRulesets": ["sql"],
+				"workbench.editor.highlightModifiedTabs": true,
+				"workbench.editor.labelFormat": "medium",
+				"workbench.editor.revealIfOpen": true,
+				"editor.rulers": [99],
+				"yaml.schemas": {
+					"https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/dbt_yml_files.json": [
+						"/*.yml",
+						"!profiles.yml",
+						"!dbt_project.yml",
+						"!packages.yml",
+						"!selectors.yml",
+						"!profile_template.yml"
+					],
+					"https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/dbt_project.json": [
+						"dbt_project.yml"
+					],
+					"https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/selectors.json": [
+						"selectors.yml"
+					],
+					"https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/packages.json": [
+						"packages.yml"
+					]
+				},
+				"python.defaultInterpreterPath": "/usr/local/bin/python",
+				"dbt.queryLimit": 500,
+				"dbt.enableNewLineagePanel": true,
+				"dbt.profilesDirOverride": "${workspaceFolder}",
+				"python.analysis.extraPaths": [
+					"/usr/local/lib/python3.9/site-packages"
+				]
+			}
 		}
 	}
 }
