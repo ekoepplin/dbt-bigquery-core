@@ -1,8 +1,0 @@
-# Remove current environment
-poetry env remove python
-
-# Create new environment and install dependencies
-poetry env use python3.9
-rm poetry.lock
-poetry lock
-poetry install
