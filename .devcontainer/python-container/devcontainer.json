@@ -12,9 +12,8 @@
 	},
 
 	"mounts": [
-		"source=${localWorkspaceFolder}/credentials/service-account.json,target=/workspace/credentials/service-account.json,type=bind",
-		"source=${localWorkspaceFolder}/credentials/soda-credentials.env,target=/workspace/credentials/soda-credentials.env,type=bind"
-
+		"source=${localWorkspaceFolder}/credentials/service-account.json,target=/workspace/credentials/service-account.json,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/credentials/soda-credentials.env,target=/workspace/credentials/soda-credentials.env,type=bind,consistency=cached"
 	],
 	"remoteEnv": {
     	"GOOGLE_SERVICE_ACCOUNT_KEY_PATH": "/workspace/credentials/service-account.json",
@@ -43,7 +42,12 @@
 				"innoverio.vscode-dbt-power-user"
 			],
 			"settings": {
-				"terminal.integrated.defaultProfile.linux": "/bin/sh",
+				"terminal.integrated.defaultProfile.linux": "/bin/bash",
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "/bin/bash"
+					}
+				},
 				"files.associations": {
 					"*.sql": "jinja-sql",
 					"*.sqlfluff": "ini",
