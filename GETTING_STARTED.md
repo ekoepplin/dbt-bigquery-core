@@ -324,4 +324,31 @@ The course provides hands-on exercises and is an excellent foundation for workin
 
 For more detailed information:
 - dbt documentation: https://docs.getdbt.com
-- Soda documentation: https://docs.soda.io 
+- Soda documentation: https://docs.soda.io
+
+## Getting started with dbt
+
+- [What is dbt](https://docs.getdbt.com/docs/introduction)?
+- Read the [dbt viewpoint](https://docs.getdbt.com/docs/about/viewpoint)
+- [Installation](https://docs.getdbt.com/docs/get-started/getting-started/overview)
+- Join the [chat](https://www.getdbt.com/community/) on Slack for live questions and support.
+
+### Setting up GCP Service Account for BigQuery
+
+1. Create a service account in GCP Console:
+   - Navigate to "IAM & Admin" > "Service Accounts"
+   - Click "Create Service Account"
+   - Give it a name and description
+
+2. Assign required roles:
+   - `BigQuery Data Editor` - For creating and modifying tables
+   - `BigQuery Job User` - For running queries and jobs
+   - `BigQuery Read Session User` - For reading data from BigQuery
+
+3. Create and download key:
+   - Click on your service account
+   - Go to "Keys" tab
+   - Add new key (JSON format)
+   - Save the downloaded JSON file as `credentials/service-account.json`
+
+For detailed instructions, refer to [GCP's official documentation on creating service accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts). 
