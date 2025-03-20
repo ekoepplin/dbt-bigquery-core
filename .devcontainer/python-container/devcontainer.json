@@ -7,7 +7,9 @@
 		"target": "development",
 		"args": { 
 			// Options arm64 or amd64
-			"PLATFORM": "amd64" 
+			"PLATFORM": "amd64",
+			"BUILDPLATFORM": "linux/amd64",
+			"TARGETPLATFORM": "linux/amd64"
 		}
 	},
 
@@ -22,101 +24,5 @@
 	"runArgs": [
 		"--env-file",
 		"./credentials/soda-credentials.env"
-	],
-
-	"remoteUser": "root",
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"GitHub.copilot",
-				"GitHub.copilot-chat",
-				"ms-python.python",
-				"bastienboutonnet.vscode-dbt",
-				"dorzey.vscode-sqlfluff",
-				"editorconfig.editorconfig",
-				"amodio.find-related",
-				"ms-azuretools.vscode-docker",
-				"visualstudioexptteam.vscodeintellicode",
-				"samuelcolvin.jinjahtml",
-				"redhat.vscode-yaml",
-				"innoverio.vscode-dbt-power-user"
-			],
-			"settings": {
-				"terminal.integrated.defaultProfile.linux": "/bin/bash",
-				"terminal.integrated.profiles.linux": {
-					"bash": {
-						"path": "/bin/bash"
-					}
-				},
-				"files.associations": {
-					"*.sql": "jinja-sql",
-					"*.sqlfluff": "ini",
-					"*.yml": "yaml",
-					"**/target/**": ""
-				},
-				"sql.linter.executablePath": "/usr/local/bin/sqlfluff",
-				"sql.format.enable": true,
-				"sql.linter.run": "onType",
-				"files.exclude": {
-					"**/.git": true,
-					"**/.svn": true,
-					"**/.hg": true,
-					"**/CVS": true,
-					"**/.DS_Store": true,
-					"**/__pycache__": true
-				},
-				"findrelated.workspaceRulesets": [
-					{
-						"name": "sql",
-						"rules": [
-							{
-								"pattern": "^(.*/)?models/(.*/)?(.+\\.sql)$",
-								"locators": ["**/compiled/**/$3"]
-							},
-							{
-								"pattern": "^(.*/)?compiled/(.*/)?(.+\\.sql)$",
-								"locators": ["**/run/**/$3"]
-							},
-							{
-								"pattern": "^(.*/)?run/(.*/)?(.+\\.sql)$",
-								"locators": ["**/models/**/$3"]
-							}
-						]
-					}
-				],
-				"findrelated.applyRulesets": ["sql"],
-				"findrelated.applyWorkspaceRulesets": ["sql"],
-				"workbench.editor.highlightModifiedTabs": true,
-				"workbench.editor.labelFormat": "medium",
-				"workbench.editor.revealIfOpen": true,
-				"editor.rulers": [99],
-				"yaml.schemas": {
-					"https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/dbt_yml_files.json": [
-						"/*.yml",
-						"!profiles.yml",
-						"!dbt_project.yml",
-						"!packages.yml",
-						"!selectors.yml",
-						"!profile_template.yml"
-					],
-					"https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/dbt_project.json": [
-						"dbt_project.yml"
-					],
-					"https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/selectors.json": [
-						"selectors.yml"
-					],
-					"https://raw.githubusercontent.com/dbt-labs/dbt-jsonschema/main/schemas/packages.json": [
-						"packages.yml"
-					]
-				},
-				"python.defaultInterpreterPath": "/usr/local/bin/python",
-				"dbt.queryLimit": 500,
-				"dbt.enableNewLineagePanel": true,
-				"dbt.profilesDirOverride": "${workspaceFolder}",
-				"python.analysis.extraPaths": [
-					"/usr/local/lib/python3.9/site-packages"
-				]
-			}
-		}
-	}
+	]
 }
