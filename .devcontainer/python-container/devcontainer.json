@@ -7,7 +7,9 @@
 		"target": "development",
 		"args": { 
 			// Options arm64 or amd64
-			"PLATFORM": "amd64" 
+			"PLATFORM": "amd64",
+			"BUILDPLATFORM": "linux/amd64",
+			"TARGETPLATFORM": "linux/amd64"
 		}
 	},
 
@@ -23,16 +25,12 @@
 		"--env-file",
 		"./credentials/soda-credentials.env"
 	],
-
 	"remoteUser": "root",
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"GitHub.copilot",
-				"GitHub.copilot-chat",
 				"ms-python.python",
 				"bastienboutonnet.vscode-dbt",
-				"dorzey.vscode-sqlfluff",
 				"editorconfig.editorconfig",
 				"amodio.find-related",
 				"ms-azuretools.vscode-docker",

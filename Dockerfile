@@ -1,11 +1,11 @@
 # Stage 1: Base
-FROM python:3.9.21 as base
+FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3.9.21 as base
 
 # Install Poetry
 RUN pip install poetry --no-cache-dir
 
 # Stage : Development
-FROM base as development
+FROM --platform=${TARGETPLATFORM:-linux/amd64} base as development
 # Set working directory
 WORKDIR /app
 # Copy Poetry configuration files
@@ -14,7 +14,7 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry config virtualenvs.create false && poetry install
 
 # Stage : Production
-FROM base as production
+FROM --platform=${TARGETPLATFORM:-linux/amd64} base as production
 # Set working directory
 WORKDIR /app
 # Copy Poetry configuration files

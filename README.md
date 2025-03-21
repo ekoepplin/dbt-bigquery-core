@@ -28,6 +28,8 @@ For detailed setup and usage instructions, please see our [GETTING_STARTED.md](G
 - Step-by-step configuration
 - Testing and data quality monitoring
 
+For comprehensive testing documentation, including all test types, configurations, and best practices, see our [GETTING_STARTED_TESTING.md](GETTING_STARTED_TESTING.md) guide.
+
 ## Credential Setup
 1. Create a `credentials` directory if it doesn't exist
 2. Copy `credentials/soda-credentials.env.template` to `credentials/soda-credentials.env`
@@ -43,5 +45,6 @@ For detailed setup and usage instructions, please see our [GETTING_STARTED.md](G
 - **Learning Resources**: 
   - [dbt Fundamentals Course](https://learn.getdbt.com/courses/dbt-fundamentals) (Recommended)
   - Detailed documentation in GETTING_STARTED.md
+  - Comprehensive testing guide in GETTING_STARTED_TESTING.md
 
 For detailed setup instructions and best practices, please refer to our comprehensive [Getting Started Guide](GETTING_STARTED.md).

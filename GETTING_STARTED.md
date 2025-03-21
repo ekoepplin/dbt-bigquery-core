@@ -39,21 +39,36 @@ This guide will help you set up and run the dbt-bigquery-core project with Soda 
    - When prompted, click "Reopen in Container" or
    - Press F1, type "Remote-Containers: Reopen in Container"
 
-3. **Set up credentials** (inside the container):
+3. **Set up credentials** (BEFORE opening the devcontainer):
    ```bash
-   # Create credentials directory
+   # Create credentials directory in your project root
    mkdir -p credentials
-   # Copy template (using VS Code file explorer)
-   # Copy your service account JSON file into credentials/service-account.json
+   
+   # Copy your service account JSON file to credentials/service-account.json
+   # This must be done BEFORE opening the devcontainer
    ```
-
-4. **Configure environment variables** (inside the container):
+   
+   Create the soda-credentials.env file either:
+   
+   **Option 1: Using terminal commands**
    ```bash
-   # Edit .env file in the project root
-   GOOGLE_SERVICE_ACCOUNT_KEY_PATH=/workspaces/dbt-bigquery-core/credentials/service-account.json
-   SODA_CLOUD_API_KEY_ID=your_soda_api_key_id
-   SODA_CLOUD_API_KEY_SECRET=your_soda_api_key_secret
+   # Create with echo commands
+   echo "SODA_CLOUD_API_KEY_ID=your_soda_api_key_id" > credentials/soda-credentials.env
+   echo "SODA_CLOUD_API_KEY_SECRET=your_soda_api_key_secret" >> credentials/soda-credentials.env
    ```
+   
+   **Option 2: Create manually**
+   - Create a new file at `credentials/soda-credentials.env`
+   - Add the following lines, replacing with your actual credentials:
+     ```
+     SODA_CLOUD_API_KEY_ID=your_soda_api_key_id
+     SODA_CLOUD_API_KEY_SECRET=your_soda_api_key_secret
+     ```
+   - Save the file
+
+4. **Open the project in devcontainer**:
+   - VS Code: Click on the green button in the bottom left > "Reopen in Container"
+   - Or use the Command Palette (Ctrl+Shift+P) and select "Dev Containers: Reopen in Container"
 
 ## Alternative: Local Setup
 
@@ -183,94 +198,17 @@ The dbt models are organized in layers:
 
 ## Testing
 
-The project includes several types of tests:
+For comprehensive information about testing in this project, including:
+- Generic tests (built-in and custom)
+- Custom SQL tests
+- Unit tests
+- Freshness tests
+- Volume tests
+- Data contracts
+- SQL linting
+- Best practices and troubleshooting
 
-1. **dbt Tests**:
-
-   a. **Generic Tests (Built-in)**:
-   - `unique`: Ensures column values are unique
-   - `not_null`: Verifies column contains no null values
-   - `accepted_values`: Validates values against a predefined list
-   - `relationships`: Checks referential integrity between tables
-   
-   Example from our models:
-   ```yaml
-   columns:
-     - name: language_code
-       tests:
-         - not_null
-         - accepted_values:
-             values: ['en', 'de']
-   ```
-
-   b. **Custom Generic Tests**:
-   - `positive_value`: Custom test ensuring numeric columns have positive values
-   ```sql
-   {% test positive_value(model, column_name) %}
-   select *
-   from {{ model }}
-   where {{ column_name }} <= 0
-   {% endtest %}
-   ```
-
-   c. **Custom SQL Tests**:
-   - `test_articles_language_match_source.sql`: Ensures language codes match source tables
-   - `test_no_duplicate_articles_across_languages.sql`: Checks for duplicate articles
-   - `test_published_at_not_future.sql`: Validates publication dates
-
-   d. **Freshness Tests**:
-   ```yaml
-   sources:
-     - name: newsapi
-       freshness:
-         warn_after: {count: 1, period: hour}
-         error_after: {count: 24, period: hour}
-       loaded_at_field: "_dlt_loads.inserted_at"
-   ```
-
-   e. **Volume Tests**:
-   - Row count comparisons between models
-   - Data volume monitoring over time
-   ```yaml
-   tests:
-     - dbt_utils.equal_rowcount:
-         compare_model: ref('stg_newsapi__articles_us_en')
-         severity: warn
-   ```
-
-2. **Soda Checks and Metadata Integration**:
-   
-   a. **dbt Metadata Ingestion**:
-   - Soda automatically ingests dbt metadata using the command:
-     ```bash
-     soda ingest dbt -d dbt_bigquery_core -c soda_testing/config.yml --dbt-artifacts target
-     ```
-   - This captures:
-     - Model lineage
-     - Column descriptions
-     - Test results
-     - Run statistics
-
-   b. **Soda Quality Checks**:
-   - Data quality monitoring
-   - Freshness checks based on dbt metadata
-   - Row count validations
-   - Custom metric monitoring
-
-   c. **Integration Configuration**:
-   ```yaml
-   data_source dbt_bigquery_core:
-     type: bigquery
-     connection:
-       account_info_json_path: ${GOOGLE_SERVICE_ACCOUNT_KEY_PATH}
-       project_id: dbt_bigquery_core
-       dataset: dbt_bigquery_core
-
-   soda_cloud:
-     host: cloud.soda.io
-     api_key_id: ${SODA_CLOUD_API_KEY_ID}
-     api_key_secret: ${SODA_CLOUD_API_KEY_SECRET}
-   ```
+Please refer to our detailed [Testing Guide](GETTING_STARTED_TESTING.md).
 
 ## Troubleshooting
 
@@ -325,6 +263,7 @@ The course provides hands-on exercises and is an excellent foundation for workin
 For more detailed information:
 - dbt documentation: https://docs.getdbt.com
 - Soda documentation: https://docs.soda.io
+- Project testing guide: [GETTING_STARTED_TESTING.md](GETTING_STARTED_TESTING.md)
 
 ## Getting started with dbt
 
