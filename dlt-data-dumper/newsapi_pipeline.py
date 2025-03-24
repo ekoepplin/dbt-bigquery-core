@@ -77,6 +77,6 @@ if __name__ == "__main__":
     logger.remove()
     logger.add(sink=lambda msg: print(msg, end=""), level=args.log_level)
 
-    destination = "duckdb" if args.test else "filesystem"
+    destination = "duckdb" if args.test else "bigquery"
 
     run_pipeline(destination=destination, full_refresh=args.full_refresh)
