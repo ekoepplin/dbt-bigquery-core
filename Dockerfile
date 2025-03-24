@@ -1,4 +1,3 @@
-# Stage 1: Base
 FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3.9.21 as base
 
 # Install Poetry and DuckDB CLI with minimal dependencies

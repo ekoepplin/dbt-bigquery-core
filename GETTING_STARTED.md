@@ -400,3 +400,51 @@ This will:
 2. Use configuration from `.dlt/config.toml`
 3. Fetch data from NewsAPI
 4. Load it into the specified destination (BigQuery or local storage) 
+
+## Windows-Specific Setup
+
+1. **Required Software**:
+   - Install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)
+   - Install [VS Code](https://code.visualstudio.com/download)
+   - Install the "Remote - Containers" extension in VS Code
+
+2. **Docker Desktop Configuration**:
+   - Ensure Docker Desktop is running
+   - Make sure WSL 2 is set as the default engine:
+     - Open Docker Desktop
+     - Go to Settings > General
+     - Check "Use WSL 2 based engine"
+     - Apply & Restart
+
+3. **WSL 2 Setup**:
+   - Open PowerShell as Administrator
+   - Install WSL 2:
+     ```powershell
+     wsl --install
+     ```
+   - Restart your computer after installation
+
+4. **Project Setup**:
+   - Clone the repository using Git
+   - Open the project in VS Code
+   - When prompted, click "Reopen in Container"
+   - First container build may take several minutes
+
+5. **Troubleshooting**:
+   - If you see platform-related errors:
+     - Open Docker Desktop
+     - Go to Settings > Docker Engine
+     - Add or modify:
+       ```json
+       {
+         "experimental": true,
+         "builder": {
+           "gc": {
+             "enabled": true
+           }
+         }
+       }
+       ```
+     - Click "Apply & Restart"
+
+The Dev Container setup handles all the platform compatibility automatically, making it the recommended approach for Windows users. 
