@@ -420,7 +420,7 @@ This will:
    - Open PowerShell as Administrator
    - Install WSL 2:
      ```powershell
-     wsl --install
+     wsl --installco mast
      ```
    - Restart your computer after installation
 
