@@ -4,7 +4,7 @@
 PYTHON = python3
 
 # Main script
-SCRIPT = newsapi_pipeline_to_gcs.py
+SCRIPT = newsapi_pipeline.py
 
 # Find Python files
 PY_FILES = $(shell find . -name "*.py")

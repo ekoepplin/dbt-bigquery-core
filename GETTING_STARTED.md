@@ -80,10 +80,10 @@ This guide will help you set up and run the dbt-bigquery-core project with Soda 
      private_key = "your-private-key"
      client_email = "your-service-account-email"
  
-     [sources.newsapi_pipeline_to_gcs]
+     [sources.newsapi_pipeline]
      api_key = "your-newsapi-key"
  
-     [newsapi_pipeline_to_gcs.destination]
+     [newsapi_pipeline.destination]
      schema_name = "ingest_newsapi_v1"
      ```
    - Create a new file at `dlt-data-dumper/.dlt/config.toml` with the following structure:
@@ -176,7 +176,7 @@ dbt-bigquery-core/
 └── dbt_project.yml          # dbt project configuration
 dlt-data-dumper/  
     ├── .dlt/                # dlt configuration and secrets
-    └── newsapi_pipeline_to_gcs.py  # NewsAPI ingestion pipeline
+    └── newsapi_pipelines.py  # NewsAPI ingestion pipeline
 ```
 
 ## Running the Pipeline
@@ -206,10 +206,9 @@ make soda-ingest
 
 # Run dlt data ingestion (from dlt-data-dumper directory)
 cd dlt-data-dumper
-# Run dlt data ingestion (from dlt-data-dumper directory) locally in duckdb
-python newsapi_pipeline_to_gcs.py --test
+
 # Run dlt data ingestion (from dlt-data-dumper directory) in bigquery
-python newsapi_pipeline_to_gcs.py --test
+python newsapi_pipeline.py
 ```
 
 ## dbt Configuration
@@ -392,7 +391,7 @@ These files must be placed in the `.dlt/` directory of your project. When using 
 To run the data ingestion:
 ```bash
 # From the dlt-data-dumper directory
-python newsapi_pipeline_to_gcs.py
+python newsapi_pipeline.py
 ```
 
 This will:
