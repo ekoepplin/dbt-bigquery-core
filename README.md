@@ -47,10 +47,10 @@ For comprehensive testing documentation, including all test types, configuration
      private_key = "your-private-key"
      client_email = "your-service-account-email"
 
-     [sources.newsapi_pipeline_to_gcs]
+     [sources.newsapi_pipeline]
      api_key = "your-newsapi-key"
 
-     [newsapi_pipeline_to_gcs.destination]
+     [newsapi_pipeline.destination]
      schema_name = "ingest_newsapi_v1"
      ```
    - Replace the placeholder values with your actual credentials
