@@ -15,7 +15,9 @@
 
 	"mounts": [
 		"source=${localWorkspaceFolder}/credentials/service-account.json,target=/workspace/credentials/service-account.json,type=bind,consistency=cached",
-		"source=${localWorkspaceFolder}/credentials/soda-credentials.env,target=/workspace/credentials/soda-credentials.env,type=bind,consistency=cached"
+		"source=${localWorkspaceFolder}/credentials/soda-credentials.env,target=/workspace/credentials/soda-credentials.env,type=bind,consistency=cached",
+		"source=${localWorkspaceFolder}/dlt-data-dumper/.dlt/config.toml,target=/workspace/dlt-data-dumper/.dlt/config.toml,type=bind",
+		"source=${localWorkspaceFolder}/dlt-data-dumper/.dlt/secrets.toml,target=/workspace/dlt-data-dumper/.dlt/secrets.toml,type=bind"
 	],
 	"remoteEnv": {
     	"GOOGLE_SERVICE_ACCOUNT_KEY_PATH": "/workspace/credentials/service-account.json",
@@ -37,10 +39,13 @@
 				"visualstudioexptteam.vscodeintellicode",
 				"samuelcolvin.jinjahtml",
 				"redhat.vscode-yaml",
-				"innoverio.vscode-dbt-power-user"
+				"innoverio.vscode-dbt-power-user",
+				"ms-toolsai.jupyter",
+				"ms-toolsai.jupyter-keymap",
+				"ms-toolsai.jupyter-renderers"
 			],
 			"settings": {
-				"terminal.integrated.defaultProfile.linux": "/bin/bash",
+				"terminal.integrated.defaultProfile.linux": "bash",
 				"terminal.integrated.profiles.linux": {
 					"bash": {
 						"path": "/bin/bash"
@@ -115,6 +120,13 @@
 					"/usr/local/lib/python3.9/site-packages"
 				]
 			}
+		}
+	},
+	"forwardPorts": [4213],
+	"portsAttributes": {
+		"4213": {
+			"label": "DuckDB UI",
+			"onAutoForward": "openBrowser"
 		}
 	}
 }

@@ -1,6 +1,6 @@
 # Getting Started with dbt and Soda Integration
 
-This guide will help you set up and run the dbt-bigquery-core project with Soda data quality testing integration. We recommend using Dev Containers for the easiest setup, especially on Windows.
+This guide will help you set up and run the dbt-bigquery-core project with Soda data quality testing integration and dlt data ingestion. We recommend using Dev Containers for the easiest setup, especially on Windows.
 
 ## Prerequisites
 
@@ -25,6 +25,9 @@ This guide will help you set up and run the dbt-bigquery-core project with Soda 
       - Metadata management
       - Integration with dbt artifacts
     - After trial expiration, you'll need to upgrade to a paid plan to continue using Soda Cloud features
+  - NewsAPI account:
+    - Sign up at [NewsAPI](https://newsapi.org/register)
+    - Get your API key from the dashboard
 
 ## Recommended Setup Using Dev Container
 
@@ -66,6 +69,37 @@ This guide will help you set up and run the dbt-bigquery-core project with Soda 
      ```
    - Save the file
 
+   **Set up dlt-data-dumper credentials**:
+   - Create a new file at `dlt-data-dumper/.dlt/secrets.toml` with the following structure:
+     ```toml
+     [destination.bigquery]
+     location = "EU"
+ 
+     [destination.bigquery.credentials]
+     project_id = "your-project-id"
+     private_key = "your-private-key"
+     client_email = "your-service-account-email"
+ 
+     [sources.newsapi_pipeline_to_gcs]
+     api_key = "your-newsapi-key"
+ 
+     [newsapi_pipeline_to_gcs.destination]
+     schema_name = "ingest_newsapi_v1"
+     ```
+   - Create a new file at `dlt-data-dumper/.dlt/config.toml` with the following structure:
+     ```toml
+     [runtime]
+     log_level = "WARNING"
+     dlthub_telemetry = true
+
+     [normalize]
+     loader_file_format = "parquet"
+
+     [destination]
+     name = "bigquery"  # or "filesystem"/"duckdb" for local development
+     ```
+   - The files will be automatically mounted in the container at `/workspace/dlt-data-dumper/.dlt/`
+
 4. **Open the project in devcontainer**:
    - VS Code: Click on the green button in the bottom left > "Reopen in Container"
    - Or use the Command Palette (Ctrl+Shift+P) and select "Dev Containers: Reopen in Container"
@@ -85,6 +119,7 @@ poetry install
    - Create a `credentials` directory if it doesn't exist
    - Copy `credentials/soda-credentials.env.template` to `credentials/soda-credentials.env`
    - Add your Google Cloud service account JSON file as `credentials/service-account.json`
+   - Set up dlt-data-dumper credentials in `.dlt/secrets.toml`
    - Update the credentials files with your actual credentials
 
 4. Configure environment variables:
@@ -92,6 +127,7 @@ poetry install
 export GOOGLE_SERVICE_ACCOUNT_KEY_PATH=/path/to/credentials/service-account.json
 export SODA_CLOUD_API_KEY_ID=your_soda_api_key_id
 export SODA_CLOUD_API_KEY_SECRET=your_soda_api_key_secret
+export DLT_SECRETS_FILE=/path/to/dlt-data-dumper/.dlt/secrets.toml
 ```
 
 ## Development Environment Options
@@ -109,6 +145,7 @@ This project is optimized for development using VS Code Dev Containers, which pr
 2. **Container Features**:
    - Poetry for dependency management
    - Pre-configured dbt and Soda tools
+   - dlt data ingestion tools
    - Development and production stages available
    - WSL2 integration on Windows
    - Git configuration persistence
@@ -130,13 +167,16 @@ The local setup described earlier is available but requires additional configura
 
 ```
 dbt-bigquery-core/
-├── models/                    # dbt models
-│   ├── staging/              # Staging models
-│   ├── intermediate/         # Intermediate models
-│   └── mart/                 # Mart (final) models
-├── tests/                    # dbt and custom tests
-├── soda_testing/            # Soda configuration
-└── dbt_project.yml         # dbt project configuration
+├── models/                   # dbt models
+│   ├── staging/             # Staging models
+│   ├── intermediate/        # Intermediate models
+│   └── mart/                # Mart (final) models
+├── tests/                   # dbt and custom tests
+├── soda_testing/           # Soda configuration
+└── dbt_project.yml          # dbt project configuration
+dlt-data-dumper/  
+    ├── .dlt/                # dlt configuration and secrets
+    └── newsapi_pipeline_to_gcs.py  # NewsAPI ingestion pipeline
 ```
 
 ## Running the Pipeline
@@ -163,6 +203,13 @@ make dbt-test
 
 # Run only Soda checks
 make soda-ingest
+
+# Run dlt data ingestion (from dlt-data-dumper directory)
+cd dlt-data-dumper
+# Run dlt data ingestion (from dlt-data-dumper directory) locally in duckdb
+python newsapi_pipeline_to_gcs.py --test
+# Run dlt data ingestion (from dlt-data-dumper directory) in bigquery
+python newsapi_pipeline_to_gcs.py --test
 ```
 
 ## dbt Configuration
@@ -227,6 +274,11 @@ Common issues and solutions:
    - Ensure profiles.yml is properly configured
    - Check for package compatibility in packages.yml
 
+4. **dlt Data Ingestion**:
+   - Verify `.dlt/secrets.toml` is properly configured
+   - Check NewsAPI credentials and rate limits
+   - Ensure BigQuery destination is properly configured
+
 ## Learning Resources
 
 ### dbt Fundamentals Course
@@ -259,10 +311,12 @@ The course provides hands-on exercises and is an excellent foundation for workin
 2. Explore the test coverage in the tests/ directory
 3. Set up your own data quality checks in Soda
 4. Customize the models according to your needs
+5. Configure and test the dlt data ingestion pipeline
 
 For more detailed information:
 - dbt documentation: https://docs.getdbt.com
 - Soda documentation: https://docs.soda.io
+- dlt documentation: https://dlthub.com/docs
 - Project testing guide: [GETTING_STARTED_TESTING.md](GETTING_STARTED_TESTING.md)
 
 ## Getting started with dbt
@@ -290,4 +344,107 @@ For more detailed information:
    - Add new key (JSON format)
    - Save the downloaded JSON file as `credentials/service-account.json`
 
-For detailed instructions, refer to [GCP's official documentation on creating service accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts). 
+For detailed instructions, refer to [GCP's official documentation on creating service accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts).
+
+## dlt Data Ingestion Setup
+
+The project uses dlt (data load tool) to ingest data from NewsAPI. Two critical configuration files are required:
+
+1. **`.dlt/secrets.toml`**: Contains credentials and connection details
+   ```toml
+   [destination.bigquery]
+   location = "EU"
+
+   [destination.bigquery.credentials]
+   project_id = "your-project-id"
+   private_key = "your-private-key"
+   client_email = "your-service-account-email"
+
+   [sources.newsapi_pipeline]
+   api_key = "your-newsapi-key"
+
+   [newsapi_pipeline.destination]
+   schema_name = "ingest_newsapi_v1"
+   ```
+
+2. **`.dlt/config.toml`**: Controls runtime behavior and destination settings
+   ```toml
+   [runtime]
+   log_level = "WARNING"
+   dlthub_telemetry = true
+
+   [normalize]
+   loader_file_format = "parquet"
+
+   # For local development, use filesystem/duckdb
+   [destination]
+   name = "filesystem"  # or "duckdb" for local testing
+   
+   # For production, use bigquery
+   # [destination]
+   # name = "bigquery"
+   ```
+
+These files must be placed in the `.dlt/` directory of your project. When using the Dev Container:
+- The files are automatically mounted and available inside the container
+- You can switch between local development (using filesystem/duckdb) and production (using BigQuery) by modifying the destination in `config.toml`
+
+To run the data ingestion:
+```bash
+# From the dlt-data-dumper directory
+python newsapi_pipeline_to_gcs.py
+```
+
+This will:
+1. Read credentials from `.dlt/secrets.toml`
+2. Use configuration from `.dlt/config.toml`
+3. Fetch data from NewsAPI
+4. Load it into the specified destination (BigQuery or local storage) 
+
+## Windows-Specific Setup
+
+1. **Required Software**:
+   - Install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)
+   - Install [VS Code](https://code.visualstudio.com/download)
+   - Install the "Remote - Containers" extension in VS Code
+
+2. **Docker Desktop Configuration**:
+   - Ensure Docker Desktop is running
+   - Make sure WSL 2 is set as the default engine:
+     - Open Docker Desktop
+     - Go to Settings > General
+     - Check "Use WSL 2 based engine"
+     - Apply & Restart
+
+3. **WSL 2 Setup**:
+   - Open PowerShell as Administrator
+   - Install WSL 2:
+     ```powershell
+     wsl --installco mast
+     ```
+   - Restart your computer after installation
+
+4. **Project Setup**:
+   - Clone the repository using Git
+   - Open the project in VS Code
+   - When prompted, click "Reopen in Container"
+   - First container build may take several minutes
+
+5. **Troubleshooting**:
+   - If you see platform-related errors:
+     - Open Docker Desktop
+     - Go to Settings > Docker Engine
+     - Add or modify:
+       ```json
+       {
+         "experimental": true,
+         "builder": {
+           "gc": {
+             "enabled": true
+           }
+         }
+       }
+       ```
+     - Click "Apply & Restart"
+
+The Dev Container setup handles all the platform compatibility automatically, making it the recommended approach for Windows users. 
