@@ -1,7 +1,17 @@
-FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3.9.21 as base
+FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3.10.16 as base
 
-# Install Poetry
-RUN pip install poetry --no-cache-dir
+# Install Poetry and DuckDB CLI with minimal dependencies
+RUN pip install poetry --no-cache-dir && \
+    apt-get update && \
+    apt-get install -y \
+    wget \
+    unzip && \
+    wget https://github.com/duckdb/duckdb/releases/download/v1.2.1/duckdb_cli-linux-amd64.zip && \
+    unzip duckdb_cli-linux-amd64.zip -d /usr/local/bin && \
+    rm duckdb_cli-linux-amd64.zip && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+    
 # Stage : Development
 FROM --platform=${TARGETPLATFORM:-linux/amd64} base as development
 WORKDIR /app

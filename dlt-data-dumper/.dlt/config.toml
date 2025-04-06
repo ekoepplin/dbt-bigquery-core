@@ -6,4 +6,4 @@ dlthub_telemetry = true
 loader_file_format="parquet"
 
 [destination]
-name = "filesystem"
+name = "bigquery"

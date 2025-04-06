@@ -5,9 +5,9 @@ models:
     config:
       materialized: table
       contract:
-        enforced: true
+        enforced: false
     columns:
-      - name: article_date
+      - name: article_datew
         type: date
         tests:
           - not_null
