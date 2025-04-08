@@ -207,17 +207,89 @@ make soda-ingest
 # Run dlt data ingestion (from dlt-data-dumper directory)
 cd dlt-data-dumper
 
-# Run dlt data ingestion (from dlt-data-dumper directory) in bigquery
+# Run dlt data ingestion in test mode (using DuckDB)
+python newsapi_pipeline.py --test
+
+# Run dlt data ingestion in production mode (using BigQuery)
 python newsapi_pipeline.py
 ```
 
+## Local Development vs Production
+
+The project supports two modes of operation:
+
+1. **Local Development (Test Mode)**:
+   - Uses DuckDB for data storage
+   - Perfect for development and testing
+   - No need for BigQuery credentials
+   - Faster execution
+   - Run with `--test` flag:
+     ```bash
+     python newsapi_pipeline.py --test
+     ```
+   - Data is stored in `/tmp/newsapi_articles.duckdb`
+   - dbt automatically uses DuckDB when target is set to 'dev'
+
+2. **Production Mode**:
+   - Uses BigQuery for data storage
+   - Requires proper BigQuery credentials
+   - Suitable for production environments
+   - Run without flags:
+     ```bash
+     python newsapi_pipeline.py
+     ```
+   - dbt uses BigQuery when target is set to 'prod'
+
+To switch between modes:
+1. For dlt: Use `--test` flag for DuckDB, omit for BigQuery
+2. For dbt: Set target in `profiles.yml` to 'dev' for DuckDB, 'prod' for BigQuery
+
 ## dbt Configuration
 
-The project uses dbt with BigQuery. Key configuration files:
+The project uses dbt with both DuckDB (for local development) and BigQuery (for production). Key configuration files:
 
-1. `profiles.yml`: Contains BigQuery connection settings
+1. `profiles.yml`: Contains connection settings for both DuckDB and BigQuery:
+   ```yaml
+   dbt-bigquery-core-profile:
+     outputs:
+       dev:  # Local development with DuckDB
+         type: duckdb
+         extensions:
+           - httpfs
+           - parquet
+           - aws
+         path: /tmp/newsapi_articles.duckdb
+         schema: ingest_newsapi_v1
+         threads: 1
+       prod:  # Production with BigQuery
+         type: bigquery
+         method: service-account
+         project: dbt-bigquery-core
+         schema: dev_ekoepplin
+         location: EU
+         threads: 1
+         job_execution_timeout_seconds: 300
+         job_retries: 1
+         keyfile: "{{ env_var('GOOGLE_SERVICE_ACCOUNT_KEY_PATH') }}"
+         priority: interactive
+     target: dev  # Default to DuckDB for local development
+   ```
+
 2. `dbt_project.yml`: Defines project structure and model configurations
 3. `packages.yml`: Lists dbt package dependencies
+
+To switch between DuckDB and BigQuery:
+1. Change the `target` in `profiles.yml`:
+   - `dev` for DuckDB (local development)
+   - `prod` for BigQuery (production)
+2. Or override at runtime:
+   ```bash
+   # Use DuckDB
+   dbt run --target dev
+   
+   # Use BigQuery
+   dbt run --target prod
+   ```
 
 ## Soda Integration
 
