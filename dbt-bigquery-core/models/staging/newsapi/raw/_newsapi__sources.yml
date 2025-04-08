@@ -2,8 +2,8 @@ version: 2
 
 sources:
   - name: newsapi
-    database: "{{ target.database if target.database is defined else 'main' }}"
-    schema: ingest_newsapi_v1
+    database: "{{ 'newsapi_articles' if target.type == 'duckdb' else target.database }}"
+    schema: "{{ 'ingest_newsapi_v1' if target.type == 'duckdb' else 'ingest_newsapi_v1' }}"
     description: "Source data from the NewsAPI BigQuery storage"
     freshness:
       warn_after: {count: 1, period: hour}
@@ -25,12 +25,8 @@ sources:
     tables:
       - name: raw_newsapi__articles_de_de
         identifier: articles_de_de
-        meta:
-          external_location: "{{ env_var('BIGQUERY_TABLE_DE_DE') if target.type == 'duckdb' else none }}"
         description: "German articles from NewsAPI"
 
       - name: raw_newsapi__articles_us_en
         identifier: articles_us_en
-        meta:
-          external_location: "{{ env_var('BIGQUERY_TABLE_US_EN') if target.type == 'duckdb' else none }}"
         description: "US English articles from NewsAPI"

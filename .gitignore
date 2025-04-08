@@ -23,6 +23,7 @@ Thumbs.db
 # Custom files
 ToDo.md
 *.duckdb
+*.db
 .dbt/
 scratch/
 .env

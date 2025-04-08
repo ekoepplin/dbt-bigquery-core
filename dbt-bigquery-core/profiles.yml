@@ -1,14 +1,23 @@
 dbt-bigquery-core-profile:
-  target: dev  # Default to dev for BigQuery
   outputs:
     dev:
+      type: duckdb
+      extensions:
+        - httpfs
+        - parquet
+        - aws
+      path: /tmp/newsapi_articles.duckdb
+      schema: ingest_newsapi_v1
+      threads: 1
+    prod:
       type: bigquery
       method: service-account
       project: dbt-bigquery-core
-      schema: dev_{{env_var('DBT_USER',env_var('USER','unknown'))}}
+      schema: dev_ekoepplin
       location: EU
       threads: 1
       job_execution_timeout_seconds: 300
       job_retries: 1
       keyfile: "{{ env_var('GOOGLE_SERVICE_ACCOUNT_KEY_PATH') }}"
       priority: interactive
+  target: dev
