@@ -1,0 +1,84 @@
+dataContractSpecification: 1.1.0
+id: newsapi-articles
+info:
+  title: NewsAPI Articles Data Contract
+  version: 1.0.0
+  description: Data contract for NewsAPI articles data
+  contact:
+    email: data-team@example.com
+    url: https://example.com/data-team
+
+models:
+  articles:
+    description: News articles from various sources
+    fields:
+      source_name:
+        type: string
+        description: Name of the news source
+        required: true
+      author:
+        type: string
+        description: Author of the article
+        required: false
+      title:
+        type: string
+        description: Title of the article
+        required: true
+      description:
+        type: string
+        description: Short description of the article
+        required: false
+      url:
+        type: string
+        description: URL to the full article
+        required: true
+        format: uri
+      image_url:
+        type: string
+        description: URL to the article's image
+        required: false
+        format: uri
+      published_at:
+        type: timestamp
+        description: Publication timestamp
+        required: true
+      content:
+        type: string
+        description: Full article content
+        required: false
+      language_code:
+        type: string
+        description: ISO language code
+        required: true
+        pattern: '^[a-z]{2}$'
+      _dlt_load_id:
+        type: string
+        description: Data load identifier
+        required: true
+      _dlt_id:
+        type: string
+        description: Unique identifier for the record
+        required: true
+
+quality:
+  type: bigquery
+  specification:
+    dataset: newsapi
+    table: articles
+  tests:
+    - type: not_null
+      field: source_name
+    - type: not_null
+      field: title
+    - type: not_null
+      field: url
+    - type: not_null
+      field: published_at
+    - type: not_null
+      field: language_code
+    - type: not_null
+      field: _dlt_load_id
+    - type: not_null
+      field: _dlt_id
+    - type: unique
+      field: _dlt_id 
