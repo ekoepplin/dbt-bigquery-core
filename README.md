@@ -37,7 +37,7 @@ For comprehensive testing documentation, including all test types, configuration
 2. Copy `credentials/soda-credentials.env.template` to `credentials/soda-credentials.env`
 3. Add your service account JSON file as `credentials/service-account.json`
 4. For dlt-data-dumper:
-   - Create `credentials/dlt-secrets.toml` with the following structure:
+   - Create `credentials/dlt-newsapi-secrets.toml` with the following structure:
      ```toml
      [destination.bigquery]
      location = "EU"

@@ -70,7 +70,7 @@ This guide will help you set up and run the dbt-bigquery-core project with Soda 
    - Save the file
 
    **Set up dlt-data-dumper credentials**:
-   - Create a new file at `dlt-data-dumper/.dlt/secrets.toml` with the following structure:
+   - Create a new file at `credentials/dlt-newsapi-secrets.toml` with the following structure:
      ```toml
      [destination.bigquery]
      location = "EU"
@@ -86,7 +86,7 @@ This guide will help you set up and run the dbt-bigquery-core project with Soda 
      [newsapi_pipeline.destination]
      schema_name = "ingest_newsapi_v1"
      ```
-   - Create a new file at `dlt-data-dumper/.dlt/config.toml` with the following structure:
+   - Create a new file at `credentials/dlt-config.toml` with the following structure:
      ```toml
      [runtime]
      log_level = "WARNING"
@@ -98,7 +98,7 @@ This guide will help you set up and run the dbt-bigquery-core project with Soda 
      [destination]
      name = "bigquery"  # or "filesystem"/"duckdb" for local development
      ```
-   - The files will be automatically mounted in the container at `/workspace/dlt-data-dumper/.dlt/`
+   - The files will be automatically mounted in the container at `/workspace/credentials/`
 
 4. **Open the project in devcontainer**:
    - VS Code: Click on the green button in the bottom left > "Reopen in Container"
@@ -119,7 +119,7 @@ poetry install
    - Create a `credentials` directory if it doesn't exist
    - Copy `credentials/soda-credentials.env.template` to `credentials/soda-credentials.env`
    - Add your Google Cloud service account JSON file as `credentials/service-account.json`
-   - Set up dlt-data-dumper credentials in `.dlt/secrets.toml`
+   - Set up dlt-data-dumper credentials in `credentials/dlt-newsapi-secrets.toml`
    - Update the credentials files with your actual credentials
 
 4. Configure environment variables:
@@ -127,7 +127,7 @@ poetry install
 export GOOGLE_SERVICE_ACCOUNT_KEY_PATH=/path/to/credentials/service-account.json
 export SODA_CLOUD_API_KEY_ID=your_soda_api_key_id
 export SODA_CLOUD_API_KEY_SECRET=your_soda_api_key_secret
-export DLT_SECRETS_FILE=/path/to/dlt-data-dumper/.dlt/secrets.toml
+export DLT_SECRETS_FILE=/path/to/credentials/dlt-newsapi-secrets.toml
 ```
 
 ## Development Environment Options
@@ -346,7 +346,7 @@ Common issues and solutions:
    - Check for package compatibility in packages.yml
 
 4. **dlt Data Ingestion**:
-   - Verify `.dlt/secrets.toml` is properly configured
+   - Verify `credentials/dlt-newsapi-secrets.toml` is properly configured
    - Check NewsAPI credentials and rate limits
    - Ensure BigQuery destination is properly configured
 
@@ -421,7 +421,7 @@ For detailed instructions, refer to [GCP's official documentation on creating se
 
 The project uses dlt (data load tool) to ingest data from NewsAPI. Two critical configuration files are required:
 
-1. **`.dlt/secrets.toml`**: Contains credentials and connection details
+1. **`credentials/dlt-newsapi-secrets.toml`**: Contains credentials and connection details
    ```toml
    [destination.bigquery]
    location = "EU"
@@ -438,7 +438,7 @@ The project uses dlt (data load tool) to ingest data from NewsAPI. Two critical 
    schema_name = "ingest_newsapi_v1"
    ```
 
-2. **`.dlt/config.toml`**: Controls runtime behavior and destination settings
+2. **`credentials/dlt-config.toml`**: Controls runtime behavior and destination settings
    ```toml
    [runtime]
    log_level = "WARNING"
@@ -456,9 +456,9 @@ The project uses dlt (data load tool) to ingest data from NewsAPI. Two critical 
    # name = "bigquery"
    ```
 
-These files must be placed in the `.dlt/` directory of your project. When using the Dev Container:
+These files must be placed in the `credentials/` directory of your project. When using the Dev Container:
 - The files are automatically mounted and available inside the container
-- You can switch between local development (using filesystem/duckdb) and production (using BigQuery) by modifying the destination in `config.toml`
+- You can switch between local development (using filesystem/duckdb) and production (using BigQuery) by modifying the destination in `dlt-config.toml`
 
 To run the data ingestion:
 ```bash
@@ -467,8 +467,8 @@ python newsapi_pipeline.py
 ```
 
 This will:
-1. Read credentials from `.dlt/secrets.toml`
-2. Use configuration from `.dlt/config.toml`
+1. Read credentials from `credentials/dlt-newsapi-secrets.toml`
+2. Use configuration from `credentials/dlt-config.toml`
 3. Fetch data from NewsAPI
 4. Load it into the specified destination (BigQuery or local storage) 
 

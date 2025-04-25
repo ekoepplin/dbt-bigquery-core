@@ -17,7 +17,7 @@
 		"source=${localWorkspaceFolder}/credentials/service-account.json,target=/workspace/credentials/service-account.json,type=bind,consistency=cached",
 		"source=${localWorkspaceFolder}/credentials/soda-credentials.env,target=/workspace/credentials/soda-credentials.env,type=bind,consistency=cached",
 		"source=${localWorkspaceFolder}/dlt-data-dumper/.dlt/config.toml,target=/workspace/dlt-data-dumper/.dlt/config.toml,type=bind",
-		"source=${localWorkspaceFolder}/dlt-data-dumper/.dlt/secrets.toml,target=/workspace/dlt-data-dumper/.dlt/secrets.toml,type=bind"
+		"source=${localWorkspaceFolder}/credentials/dlt-newsapi-secrets.toml,target=/workspace/dlt-data-dumper/.dlt/secrets.toml,type=bind"
 	],
 	"remoteEnv": {
     	"GOOGLE_SERVICE_ACCOUNT_KEY_PATH": "/workspace/credentials/service-account.json",
