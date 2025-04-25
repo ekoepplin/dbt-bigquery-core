@@ -23,11 +23,12 @@ soda-ingest:
 	@echo "Running Soda ingest..."
 	soda ingest dbt -d $(DBT_PROJECT) -c $(SODA_CONFIG) --dbt-artifacts $(DBT_TARGET)
 
-# Run Soda ingest
+# Run Newsapi ingest in test mode
 ingest-newsapi-data-test: 
 	@echo "Running ingest for newsapi data in test mode..."
 	cd ../dlt-data-dumper && $(MAKE) test
 
+# Run Newsapi ingest in production mode
 ingest-newsapi-data-prod: 
 	@echo "Running ingest for newsapi data in production mode..."
 	cd ../dlt-data-dumper && $(MAKE) run

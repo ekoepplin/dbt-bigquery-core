@@ -31,6 +31,7 @@ dlt = {extras = ["bigquery"], version = "^1.8.0"}
 soda-dbt = {version = "*", source = "soda"}
 soda-duckdb = {version = "*", source = "soda"}
 soda-bigquery = {version = "*", source = "soda"}
+streamlit = "^1.44.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"

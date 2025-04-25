@@ -9,5 +9,5 @@ WITH daily_articles AS (
 
 SELECT 
     article_date,
-    CAST(article_count AS STRING) AS article_count
+    article_count
 FROM daily_articles

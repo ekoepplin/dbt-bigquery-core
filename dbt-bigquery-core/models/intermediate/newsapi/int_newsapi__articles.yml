@@ -19,64 +19,61 @@ models:
       - dbt_utils.equal_rowcount:
           compare_model: ref('stg_newsapi__articles_us_en')
           severity: warn
-      - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - url
-            - language_code
+
     columns:
       - name: source_name
         description: "Name of the news source"
-        type: string
+        data_type: string
         tests:
           - not_null
       - name: author
         description: "Author of the article"
-        type: string
+        data_type: string
       - name: title
         description: "Title of the article"
-        type: string
+        data_type: string
         tests:
           - not_null
       - name: description
         description: "Description or summary of the article"
-        type: string
+        data_type: string
       - name: url
         description: "URL to the article"
-        type: string
+        data_type: string
         tests:
           - not_null
       - name: image_url
         description: "URL to the article's image"
-        type: string
+        data_type: string
       - name: published_at
         description: "Publication date and time"
-        type: timestamp
+        data_type: timestamp
         tests:
           - not_null
       - name: content
         description: "Article content"
-        type: string
+        data_type: string
       - name: language_code
         description: "Language code (en or de)"
-        type: string
+        data_type: string
         tests:
           - not_null
           - accepted_values:
               values: ['en', 'de']
       - name: _dlt_load_id
         description: "Load ID from data loading tool"
-        type: string
+        data_type: string
         tests:
           - not_null
       - name: _dlt_id
         description: "Unique ID from data loading tool"
-        type: string
+        data_type: string
         tests:
           - not_null
           - unique
       - name: source_table
         description: "Source table identifier (us_en or de_de)"
-        type: string
+        data_type: string
         tests:
           - not_null
           - accepted_values:

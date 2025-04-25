@@ -2,4 +2,4 @@
 
 SELECT *
 FROM {{ ref('int_newsapi__articles') }}
-WHERE published_at > CURRENT_TIMESTAMP() 
+WHERE published_at > CURRENT_DATE() 

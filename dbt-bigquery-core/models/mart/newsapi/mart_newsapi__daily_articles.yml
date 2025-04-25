@@ -7,11 +7,12 @@ models:
       contract:
         enforced: false
     columns:
-      - name: article_datew
-        type: date
+      - name: article_date
+        data_type: date
         tests:
           - not_null
       - name: article_count
-        type: integer
+        data_type: integer
         tests:
           - not_null
+          - positive_value
