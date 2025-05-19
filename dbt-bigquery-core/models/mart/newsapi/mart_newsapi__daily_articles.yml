@@ -2,16 +2,31 @@ version: 2
 
 models:
   - name: mart_newsapi__daily_articles
-    config:
-      materialized: table
-      contract:
-        enforced: false
+    description: "Daily article counts aggregated from news articles"
+    meta:
+      owner: "data_team_name"
+      business_domain: "content"
+      priority: "high"
+      sla: "daily"
+      business_terms:
+        article_date: "The date when articles were published"
+        article_count: "Number of articles published on a given date"
+      upstream_dependencies:
+        - "int_newsapi__articles"
+      data_category: "news_analytics"
+      update_schedule: "daily"
+    contract:
+      enforced: false
     columns:
-      - name: article_datew
-        type: date
+      - name: article_date
+        description: "The date when articles were published"
+        data_type: date
         tests:
           - not_null
+          - unique
       - name: article_count
-        type: integer
+        description: "Number of articles published on a given date"
+        data_type: integer
         tests:
           - not_null
+          - positive_value
