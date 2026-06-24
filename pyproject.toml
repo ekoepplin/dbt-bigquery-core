@@ -1,41 +1,40 @@
-[tool.poetry]
+[project]
 name = "dbt-bigquery-core"
 version = "0.1.0"
 description = ""
-authors = ["Eugen Koepplin <ekoepplin@gmx.net>"]
-readme = "README.md"
-package-mode = false
+requires-python = ">=3.10,<3.11"
+dependencies = [
+    "duckdb==1.1.2",
+    "fire>=0.5.0,<1.0.0",
+    "google-cloud-bigquery>=3.0.0,<4.0.0",
+    "loguru>=0.7.2,<1.0.0",
+    "google-auth>=2.24.0,<3.0.0",
+    "newsapi==0.1.1",
+    "newsapi-python==0.2.7",
+    "pydantic>=2.7.4,<3.0.0",
+    "db-dtypes>=1.1.1,<2.0.0",
+    "pyarrow>=12.0.0,<18.0.0",
+    "google-cloud-bigquery-storage==2.26",
+    "dbt-core>=1.8.0,<2.0.0",
+    "dbt-bigquery>=1.8.0,<2.0.0",
+    "dbt-duckdb>=1.8.0,<1.9.0",
+    "dlt[bigquery]>=1.8.0,<2.0.0",
+    "soda-dbt",
+    "soda-duckdb",
+    "soda-bigquery",
+]
 
-[[tool.poetry.source]]
+[dependency-groups]
+dev = [
+    "pytest>=7.4.3,<8.0.0",
+    "ruff>=0.1.6,<1.0.0",
+]
+
+[[tool.uv.index]]
 name = "soda"
 url = "https://pypi.cloud.soda.io"
-priority = "supplemental"
 
-[tool.poetry.dependencies]
-python = ">=3.10,<3.11"
-duckdb = "1.1.2"
-fire = "^0.5.0"
-google-cloud-bigquery = ">=3.0.0,<4.0.0"
-loguru = "^0.7.2"
-google-auth = "^2.24.0"
-newsapi =  "0.1.1"
-newsapi-python = "0.2.7"
-pydantic = "^2.7.4"
-db-dtypes = "^1.1.1"
-pyarrow = ">=12.0.0,<18.0.0"
-google-cloud-bigquery-storage = "2.26"
-dbt-core = ">=1.8.0,<2.0.0"
-dbt-bigquery = ">=1.8.0,<2.0.0"
-dbt-duckdb = ">=1.8.0,<2.0.0"
-dlt = {extras = ["bigquery"], version = "^1.8.0"}
-soda-dbt = {version = "*", source = "soda"}
-soda-duckdb = {version = "*", source = "soda"}
-soda-bigquery = {version = "*", source = "soda"}
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.4.3"
-ruff = "^0.1.6"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.uv.sources]
+soda-dbt = { index = "soda" }
+soda-duckdb = { index = "soda" }
+soda-bigquery = { index = "soda" }

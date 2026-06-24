@@ -45,10 +45,10 @@
 				"ms-toolsai.jupyter-renderers"
 			],
 			"settings": {
-				"terminal.integrated.defaultProfile.linux": "bash",
+				"terminal.integrated.defaultProfile.linux": "zsh",
 				"terminal.integrated.profiles.linux": {
-					"bash": {
-						"path": "/bin/bash"
+					"zsh": {
+						"path": "/usr/bin/zsh"
 					}
 				},
 				"files.associations": {

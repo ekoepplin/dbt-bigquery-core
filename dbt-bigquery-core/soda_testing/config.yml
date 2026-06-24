@@ -1,13 +1,7 @@
 data_source dbt_bigquery_core:
-  type: bigquery
+  type: duckdb
   connection:
-    account_info_json_path: ${GOOGLE_SERVICE_ACCOUNT_KEY_PATH}
-    auth_scopes:
-      - https://www.googleapis.com/auth/bigquery
-      - https://www.googleapis.com/auth/cloud-platform
-      - https://www.googleapis.com/auth/drive
-    project_id: dbt_bigquery_core
-    dataset: dbt_bigquery_core
+    database: /tmp/newsapi_articles.duckdb
 soda_cloud:
   host: cloud.soda.io
   api_key_id: ${SODA_CLOUD_API_KEY_ID}

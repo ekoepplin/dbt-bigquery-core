@@ -3,7 +3,7 @@ SODA_CONFIG := soda_testing/config.yml
 DBT_TARGET := target
 DBT_PROJECT := dbt_bigquery_core
 
-.PHONY: all dbt-run dbt-test soda-ingest
+.PHONY: all dbt-run dbt-test soda-ingest dbt-test-and-observe
 
 # Default target
 all: dbt-run dbt-test soda-ingest
@@ -19,6 +19,9 @@ dbt-test:
 	dbt test
 
 # Run Soda ingest
-soda-ingest: 
+soda-ingest:
 	@echo "Running Soda ingest..."
 	soda ingest dbt -d $(DBT_PROJECT) -c $(SODA_CONFIG) --dbt-artifacts $(DBT_TARGET)
+
+# Run dbt tests then immediately push results to Soda Cloud
+dbt-test-and-observe: dbt-test soda-ingest
