@@ -1,4 +1,4 @@
-FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3.10.16 as base
+FROM --platform=${TARGETPLATFORM:-linux/amd64} python:3.13 as base
 
 ENV UV_SYSTEM_PYTHON=1
 

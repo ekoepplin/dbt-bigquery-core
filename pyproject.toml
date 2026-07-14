@@ -2,23 +2,23 @@
 name = "dbt-bigquery-core"
 version = "0.1.0"
 description = ""
-requires-python = ">=3.10,<3.11"
+requires-python = ">=3.13"
 dependencies = [
-    "duckdb==1.1.2",
+    "duckdb>=1.5.4",
     "fire>=0.5.0,<1.0.0",
     "google-cloud-bigquery>=3.0.0,<4.0.0",
     "loguru>=0.7.2,<1.0.0",
     "google-auth>=2.24.0,<3.0.0",
     "newsapi==0.1.1",
     "newsapi-python==0.2.7",
-    "pydantic>=2.7.4,<3.0.0",
+    "pydantic>=2.13.0,<3.0.0",
     "db-dtypes>=1.1.1,<2.0.0",
-    "pyarrow>=12.0.0,<18.0.0",
-    "google-cloud-bigquery-storage==2.26",
-    "dbt-core>=1.8.0,<2.0.0",
-    "dbt-bigquery>=1.8.0,<2.0.0",
-    "dbt-duckdb>=1.8.0,<1.9.0",
-    "dlt[bigquery]>=1.8.0,<2.0.0",
+    "pyarrow>=24.0.0",
+    "google-cloud-bigquery-storage>=2.39.0",
+    "dbt-core>=1.11.0,<2.0.0",
+    "dbt-bigquery>=1.11.0,<2.0.0",
+    "dbt-duckdb>=1.10.1",
+    "dlt[bigquery]>=1.28.0,<2.0.0",
     "soda-dbt",
     "soda-duckdb",
     "soda-bigquery",
@@ -26,8 +26,9 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "pytest>=7.4.3,<8.0.0",
-    "ruff>=0.1.6,<1.0.0",
+    "pytest>=9.1.0",
+    "ruff>=0.15.0,<1.0.0",
+    "ipykernel>=6.29.0,<7.0.0",
 ]
 
 [[tool.uv.index]]
