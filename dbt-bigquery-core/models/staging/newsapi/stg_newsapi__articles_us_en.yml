@@ -5,8 +5,10 @@ models:
     description: "Staged US English articles from NewsAPI"
     tests:
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 1
-          severity: warn
+          arguments:
+            min_value: 1
+          config:
+            severity: warn
     columns:
       - name: _dlt_id
         description: "Unique ID from data loading tool"
@@ -15,8 +17,9 @@ models:
           - not_null
           - unique
           - relationships:
-              to: ref('src_newsapi__articles_us_en')
-              field: _dlt_id
+              arguments:
+                to: ref('src_newsapi__articles_us_en')
+                field: _dlt_id
       - name: _dlt_load_id
         description: "Load ID from data loading tool"
         data_type: string
@@ -33,15 +36,17 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_value_lengths_to_be_between:
-              min_value: 5
-              max_value: 500
+              arguments:
+                min_value: 5
+                max_value: 500
       - name: url
         description: "URL to the article"
         data_type: string
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
-              regex: "^https?://"
+              arguments:
+                regex: "^https?://"
       - name: published_at
         description: "Publication date and time"
         data_type: timestamp
@@ -52,7 +57,8 @@ models:
         data_type: string
         tests:
           - dbt_expectations.expect_column_values_to_be_in_set:
-              value_set: ['en']
+              arguments:
+                value_set: ['en']
       - name: author
         description: "Author of the article"
         data_type: string

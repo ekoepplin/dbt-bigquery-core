@@ -19,8 +19,10 @@ models:
       enforced: false
     tests:
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 1
-          severity: warn
+          arguments:
+            min_value: 1
+          config:
+            severity: warn
     columns:
       - name: article_date
         description: "The date when articles were published"
@@ -29,8 +31,10 @@ models:
           - not_null
           - unique
           - dbt_expectations.expect_column_values_to_be_of_type:
-              column_type: date
-              severity: warn
+              arguments:
+                column_type: date
+              config:
+                severity: warn
       - name: article_count
         description: "Number of articles published on a given date"
         data_type: integer
@@ -38,5 +42,6 @@ models:
           - not_null
           - positive_value
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 1
-              max_value: 10000
+              arguments:
+                min_value: 1
+                max_value: 10000

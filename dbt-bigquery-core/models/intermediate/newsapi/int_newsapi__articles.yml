@@ -16,26 +16,26 @@ models:
       data_category: "news_content"
       update_schedule: "hourly"
     tests:
-      - dbt_utils.equal_rowcount:
-          compare_model: ref('stg_newsapi__articles_us_en')
-          severity: warn
       - dbt_expectations.expect_table_row_count_to_be_between:
-          min_value: 1
-          severity: warn
+          arguments:
+            min_value: 1
+          config:
+            severity: warn
       - dbt_expectations.expect_table_columns_to_match_set:
-          column_list:
-            - source_name
-            - author
-            - title
-            - description
-            - url
-            - image_url
-            - published_at
-            - content
-            - language_code
-            - _dlt_load_id
-            - _dlt_id
-            - source_table
+          arguments:
+            column_list:
+              - source_name
+              - author
+              - title
+              - description
+              - url
+              - image_url
+              - published_at
+              - content
+              - language_code
+              - _dlt_load_id
+              - _dlt_id
+              - source_table
     columns:
       - name: source_name
         description: "Name of the news source"
@@ -51,8 +51,9 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_value_lengths_to_be_between:
-              min_value: 5
-              max_value: 500
+              arguments:
+                min_value: 5
+                max_value: 500
       - name: description
         description: "Description or summary of the article"
         data_type: string
@@ -62,7 +63,8 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_match_regex:
-              regex: "^https?://"
+              arguments:
+                regex: "^https?://"
       - name: image_url
         description: "URL to the article's image"
         data_type: string
@@ -71,9 +73,11 @@ models:
         data_type: timestamp
         tests:
           - not_null
-          - dbt_expectations.expect_column_values_to_be_of_type:
-              column_type: timestamp
-              severity: warn
+          - dbt_expectations.expect_column_values_to_be_in_type_list:
+              arguments:
+                column_type_list: ["timestamp", "timestamp with time zone"]
+              config:
+                severity: warn
       - name: content
         description: "Article content"
         data_type: string
@@ -83,7 +87,8 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['en', 'de']
+              arguments:
+                values: ['en', 'de']
       - name: _dlt_load_id
         description: "Load ID from data loading tool"
         data_type: string
@@ -101,4 +106,5 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values: ['us_en', 'de_de'] 
+              arguments:
+                values: ['us_en', 'de_de']
