@@ -1,0 +1,19 @@
+[project]
+name = "dlt-data-dumper"
+version = "0.1.0"
+description = ""
+requires-python = ">=3.13"
+dependencies = [
+    "dlt[parquet]>=1.28.0,<2.0.0",
+    "loguru>=0.7.2,<1.0.0",
+    "newsapi==0.1.1",
+    "newsapi-python==0.2.7",
+]
+
+[dependency-groups]
+dev = [
+    "black",
+    "flake8",
+    "isort",
+    "autopep8",
+]

@@ -11,7 +11,7 @@ PY_FILES = $(shell find . -name "*.py")
 
 # Install dependencies
 install:
-	pipenv install --dev
+	uv sync
 
 # Run the pipeline normally
 run:
@@ -31,7 +31,7 @@ debug:
 
 # Install linting tools
 install-lint:
-	pipenv install black flake8 isort autopep8
+	uv sync
 
 # Check code style without fixing
 lint: install-lint
