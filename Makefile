@@ -13,7 +13,7 @@ endif
 
 ## Development
 dbt-deps:
-	$(DOCKER_CMD) dbt deps \
+	$(DOCKER_CMD) uv run dbt deps \
 		--project-dir $$DBT_FOLDER \
-		--profiles-dir $$DBT_FOLDER 
+		--profiles-dir $$DBT_FOLDER
 

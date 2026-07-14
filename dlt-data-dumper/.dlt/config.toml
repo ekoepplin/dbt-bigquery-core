@@ -7,3 +7,6 @@ loader_file_format="parquet"
 
 [destination]
 name = "bigquery"
+
+[newsapi_pipeline.destination]
+schema_name = "ingest_newsapi_v1"
