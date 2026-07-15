@@ -16,7 +16,7 @@ models:
       data_category: "news_analytics"
       update_schedule: "daily"
     contract:
-      enforced: false
+      enforced: true
     tests:
       - dbt_expectations.expect_table_row_count_to_be_between:
           arguments:

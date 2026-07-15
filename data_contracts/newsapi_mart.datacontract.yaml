@@ -1,0 +1,90 @@
+version: 1.0.0
+kind: DataContract
+apiVersion: v3.1.0
+id: newsapi-daily-articles
+name: dbt_bigquery_core
+status: active
+description:
+  purpose: >
+    Daily counts of ingested NewsAPI articles, published for downstream
+    reporting and analytics consumers outside the dbt project.
+  usage: >
+    Join on article_date for daily/weekly reporting. One row per calendar
+    date; no gaps are backfilled for dates with zero articles.
+  limitations: >
+    Counts reflect articles loaded at query time only; late-arriving source
+    data before dbt's next run is not reflected until the following build.
+domain: content
+dataProduct: newsapi_daily_articles
+servers:
+- server: dev
+  type: duckdb
+  environment: dev
+  database: /tmp/newsapi_articles.duckdb
+  schema: ingest_newsapi_v1
+  description: Local development target (matches profiles.yml's `dev` output).
+- server: prod
+  type: bigquery
+  environment: prod
+  project: dbt-bigquery-core
+  dataset: dev_ekoepplin
+  description: Production target (matches profiles.yml's `prod` output).
+- server: local_dev
+  type: local
+  format: parquet
+  path: /tmp/datacontract_exports/mart_newsapi__daily_articles.parquet
+  description: >
+    Parquet snapshot of the dev DuckDB mart table, exported by
+    `make data-contract-test`. `type: duckdb` (the `dev` server above) has
+    no live-test connector in datacontract-cli as of 1.0.12 — this is the
+    validated workaround for testing against real data with no warehouse
+    other than local DuckDB (see GETTING_STARTED_DATA_CONTRACTS.md).
+schema:
+- name: mart_newsapi__daily_articles
+  physicalType: table
+  description: Daily article counts aggregated from news articles
+  customProperties:
+  - property: tags
+    value: mart,reporting
+  logicalType: object
+  physicalName: mart_newsapi__daily_articles
+  quality:
+  - type: library
+    metric: rowCount
+    mustBeGreaterOrEqualTo: 1
+    description: The mart must never build with zero rows.
+  properties:
+  - name: article_date
+    physicalType: date
+    description: The date when articles were published
+    primaryKey: true
+    primaryKeyPosition: 1
+    logicalType: date
+    required: true
+    unique: true
+  - name: article_count
+    physicalType: integer
+    description: Number of articles published on a given date
+    logicalType: integer
+    required: true
+    quality:
+    - type: sql
+      query: "SELECT COUNT(*) FROM mart_newsapi__daily_articles WHERE article_count < 1 OR article_count > 10000"
+      mustBe: 0
+      description: Mirrors the dbt_expectations range test on this column.
+team:
+  name: data_team_name
+slaProperties:
+- property: frequency
+  value: daily
+  element: mart_newsapi__daily_articles
+- property: generalAvailability
+  value: "06:00 UTC"
+  element: mart_newsapi__daily_articles
+customProperties:
+- property: dbt_version
+  value: 1.11.12
+- property: dbt_model
+  value: mart_newsapi__daily_articles
+- property: owner
+  value: data_team_name

@@ -328,6 +328,10 @@ For comprehensive information about testing in this project, including:
 
 Please refer to our detailed [Testing Guide](GETTING_STARTED_TESTING.md).
 
+For a deeper look at data contracts specifically — dbt's native model
+contracts plus the external, ODCS-based contract managed with
+`datacontract-cli` — see the [Data Contracts Guide](GETTING_STARTED_DATA_CONTRACTS.md).
+
 ## Troubleshooting
 
 Common issues and solutions:
@@ -389,6 +393,7 @@ For more detailed information:
 - Soda documentation: https://docs.soda.io
 - dlt documentation: https://dlthub.com/docs
 - Project testing guide: [GETTING_STARTED_TESTING.md](GETTING_STARTED_TESTING.md)
+- Project data contracts guide: [GETTING_STARTED_DATA_CONTRACTS.md](GETTING_STARTED_DATA_CONTRACTS.md)
 
 ## Getting started with dbt
 

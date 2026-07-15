@@ -1,0 +1,134 @@
+version: 1.0.0
+kind: DataContract
+apiVersion: v3.1.0
+id: newsapi-raw-articles
+name: newsapi_raw_articles
+status: active
+description:
+  purpose: >
+    Inbound contract for the raw NewsAPI article feed as it lands from dlt,
+    before any dbt transformation. Describes the shape and quality the
+    vendor feed is expected to deliver so the pipeline can validate what it
+    ingests, independent of downstream dbt models.
+  usage: >
+    Test a raw parquet dump of a landed source table (e.g.
+    ingest_newsapi_v1.articles_us_en) against this contract with
+    `make data-contract-raw-test`, or lint it standalone with
+    `make data-contract-raw-lint`. One row per fetched article.
+  limitations: >
+    Covers the flattened dlt output only (nested `source` object already
+    normalised to `source__*` columns, dlt bookkeeping columns included).
+    Localised feeds (articles_de_de, etc.) share this shape but are not
+    separately contracted here.
+domain: content
+dataProduct: newsapi_raw_articles
+servers:
+- server: dev
+  type: duckdb
+  environment: dev
+  database: /tmp/newsapi_articles.duckdb
+  schema: ingest_newsapi_v1
+  description: >
+    Local development target (matches profiles.yml's `dev` output). The raw
+    dlt table lives here as `articles_us_en`. `type: duckdb` has no live-test
+    connector in datacontract-cli 1.0.12 — use the `local_raw` server below.
+- server: local_raw
+  type: local
+  format: parquet
+  path: /tmp/datacontract_exports/raw_newsapi__articles_us_en.parquet
+  description: >
+    Parquet snapshot of the dev raw table `articles_us_en`, exported by
+    `make data-contract-raw-test`. This is the offline-testable server (no
+    NewsAPI key needed) — datacontract-cli reads it through its DuckDB-backed
+    `local` file engine (see GETTING_STARTED_DATA_CONTRACTS.md, Part 2a).
+- server: local_raw_native
+  type: local
+  format: parquet
+  path: /tmp/newsapi_raw/ingest_newsapi_v1/articles_us_en/*.parquet
+  description: >
+    Parquet landed NATIVELY by the dlt `filesystem` destination
+    (`python newsapi_pipeline.py --filesystem`, or `make dump-raw-parquet`).
+    dlt writes one parquet file per load under
+    <bucket>/<dataset>/<table>/, so the path is a glob — datacontract-cli's
+    `local` engine passes it to DuckDB's `read_parquet`, which expands it.
+    This is the "raw dump lands as parquet with no export step" path.
+schema:
+- name: raw_newsapi__articles_us_en
+  physicalType: parquet
+  description: Raw NewsAPI articles as landed by dlt, one row per article.
+  customProperties:
+  - property: tags
+    value: raw,inbound,vendor
+  logicalType: object
+  physicalName: raw_newsapi__articles_us_en
+  quality:
+  - type: library
+    metric: rowCount
+    mustBeGreaterOrEqualTo: 1
+    description: The raw feed must never land with zero rows.
+  properties:
+  - name: author
+    physicalType: STRING
+    logicalType: string
+    description: Article author as reported by the vendor (may be sparse).
+  - name: title
+    physicalType: STRING
+    logicalType: string
+    description: Article headline.
+    required: true
+  - name: description
+    physicalType: STRING
+    logicalType: string
+    description: Short article summary.
+  - name: url
+    physicalType: STRING
+    logicalType: string
+    description: Canonical article URL — the natural business key of the feed.
+    required: true
+  - name: url_to_image
+    physicalType: STRING
+    logicalType: string
+    description: URL of the article's lead image.
+  - name: published_at
+    physicalType: TIMESTAMP
+    logicalType: timestamp
+    description: Vendor-reported publish time (timezone-aware upstream).
+    required: true
+    quality:
+    - type: sql
+      query: "SELECT COUNT(*) FROM raw_newsapi__articles_us_en WHERE published_at IS NULL"
+      mustBe: 0
+      description: Every landed article must carry a publish timestamp.
+  - name: content
+    physicalType: STRING
+    logicalType: string
+    description: Truncated article body as provided by the vendor.
+  - name: source__name
+    physicalType: STRING
+    logicalType: string
+    description: Publisher name (flattened from the vendor's nested `source`).
+  - name: source__id
+    physicalType: STRING
+    logicalType: string
+    description: Publisher id (flattened from the vendor's nested `source`).
+  - name: _dlt_load_id
+    physicalType: STRING
+    logicalType: string
+    description: dlt load identifier for the batch this row arrived in.
+  - name: _dlt_id
+    physicalType: STRING
+    logicalType: string
+    description: dlt-generated surrogate row id.
+team:
+  name: external_vendor
+slaProperties:
+- property: frequency
+  value: daily
+  element: raw_newsapi__articles_us_en
+customProperties:
+- property: source_system
+  value: NewsAPI
+- property: owner
+  value: external_vendor
+- property: dbt_source
+  value: newsapi.raw_newsapi__articles_us_en

@@ -1,7 +1,7 @@
 WITH daily_articles AS (
     SELECT
         CAST(published_at AS DATE) AS article_date,
-        COUNT(*) AS article_count
+        CAST(COUNT(*) AS INTEGER) AS article_count
     FROM {{ ref('int_newsapi__articles') }}
     WHERE published_at IS NOT NULL
     GROUP BY 1

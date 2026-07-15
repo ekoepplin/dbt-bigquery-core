@@ -138,13 +138,42 @@ def run_all_articles():
     )
 
 
+# Where the `filesystem` destination lands raw parquet. Overridable via dlt
+# config ([newsapi_pipeline.destination] bucket_url in .dlt/config.toml) or the
+# equivalent dlt env var NEWSAPI_PIPELINE__DESTINATION__BUCKET_URL; defaults to
+# a local dir so `--filesystem` works with no cloud creds.
+DEFAULT_RAW_BUCKET_URL = "file:///tmp/newsapi_raw"
+
+
+def _raw_bucket_url() -> str:
+    return (
+        dlt.config.get("newsapi_pipeline.destination.bucket_url", str)
+        or DEFAULT_RAW_BUCKET_URL
+    )
+
+
 def run_pipeline(destination="bigquery", full_refresh=False):
+    # dlt run() kwargs common to every destination
+    run_kwargs = {"write_disposition": "replace" if full_refresh else "append"}
+
     if destination == "duckdb":
         pipeline = dlt.pipeline(
             pipeline_name="newsapi_articles",
             destination=dlt.destinations.duckdb("/tmp/newsapi_articles.duckdb"),
             dataset_name=target_schema_name,
         )
+    elif destination == "filesystem":
+        # Land the raw feed natively as parquet files at
+        # <bucket>/<dataset>/<table>/<load_id>.<file_id>.parquet — no
+        # warehouse required. This is what the inbound ODCS contract's
+        # `local_raw_native` server points at (see
+        # GETTING_STARTED_DATA_CONTRACTS.md, Part 2a).
+        pipeline = dlt.pipeline(
+            pipeline_name="newsapi_articles",
+            destination=dlt.destinations.filesystem(bucket_url=_raw_bucket_url()),
+            dataset_name=target_schema_name,
+        )
+        run_kwargs["loader_file_format"] = "parquet"
     else:
         pipeline = dlt.pipeline(
             pipeline_name="newsapi_articles",
@@ -152,9 +181,7 @@ def run_pipeline(destination="bigquery", full_refresh=False):
             dataset_name=target_schema_name,
         )
 
-    load_info = pipeline.run(
-        run_all_articles(), write_disposition="replace" if full_refresh else "append"
-    )
+    load_info = pipeline.run(run_all_articles(), **run_kwargs)
 
     logger.info(f"Load info: {load_info}")
     logger.success(f"All data processed and uploaded to {destination}")
@@ -162,7 +189,14 @@ def run_pipeline(destination="bigquery", full_refresh=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--test", action="store_true", help="Enable test mode")
+    parser.add_argument(
+        "--test", action="store_true", help="Load to local DuckDB instead of BigQuery"
+    )
+    parser.add_argument(
+        "--filesystem",
+        action="store_true",
+        help="Land raw parquet files locally via the dlt filesystem destination",
+    )
     parser.add_argument(
         "--full-refresh", action="store_true", help="Perform a full refresh"
     )
@@ -172,6 +206,11 @@ if __name__ == "__main__":
     logger.remove()
     logger.add(sink=lambda msg: print(msg, end=""), level=args.log_level)
 
-    destination = "duckdb" if args.test else "bigquery"
+    if args.filesystem:
+        destination = "filesystem"
+    elif args.test:
+        destination = "duckdb"
+    else:
+        destination = "bigquery"
 
     run_pipeline(destination=destination, full_refresh=args.full_refresh)

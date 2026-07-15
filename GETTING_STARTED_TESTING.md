@@ -175,14 +175,20 @@ models:
         enforced: true
     columns:
       - name: article_date
-        type: date
+        data_type: date
         tests:
           - not_null
       - name: article_count
-        type: integer
+        data_type: integer
         tests:
           - not_null
 ```
+
+`mart_newsapi__daily_articles` and `int_newsapi__articles` both enforce contracts
+today. For the full picture — how dbt's build-time contracts relate to the
+external, ODCS-based contract in `data_contracts/newsapi_mart.odcs.yaml`, the
+`datacontract-cli` tool, and a worked example of breaking and fixing a
+contract — see the [Data Contracts Guide](GETTING_STARTED_DATA_CONTRACTS.md).
 
 ## SQL Linting
 
