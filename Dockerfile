@@ -21,7 +21,6 @@ FROM base as development
 WORKDIR /app
 COPY pyproject.toml uv.lock ./
 RUN uv sync && \
-    npm install -g @anthropic-ai/claude-code && \
     sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 ENV SHELL=/usr/bin/zsh
 

@@ -28,6 +28,7 @@
 		"./credentials/soda-credentials.env"
 	],
 	"remoteUser": "root",
+	"postCreateCommand": "uv sync",
 	"customizations": {
 		"vscode": {
 			"extensions": [
